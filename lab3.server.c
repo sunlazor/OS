@@ -31,7 +31,7 @@ int main()
   key = ftok(path, key_num);
   key_id = msgget(key, IPC_CREAT | S_IRUSR | S_IWUSR);
   //printf("key_id:%d\n", key_id);
-  //printf("sizeof:%d\n", sizeof(buff.text));
+  printf("sizeof:%d\n", sizeof(client.text));
 
   while(server_time_left-- > 0)
   {
@@ -49,7 +49,7 @@ int main()
         {
           client.status = S_TIME;
           strcpy(client.text, "YO BRO!");
-          msgsnd(key_id, &client, sizeof(client.text[555]), 0);
+          msgsnd(key_id, &client, sizeof(client.text), 0);
           client.status = S_CONN;
         }
         if(msgrcv(key_id, &client, 0, C_DISC, IPC_NOWAIT) > -1)
@@ -70,7 +70,7 @@ int main()
     //   break;
     // }
     printf("Client status: %d\n", client.status);
-    printf("Server time left: %d\n", server_time_left);
+    // printf("Server time left: %d\n", server_time_left);
     sleep(1);
   }
 
