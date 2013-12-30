@@ -126,7 +126,7 @@ int main()
         else
         {
           printf("msgsnd OK\n");
-          int r_msgrcv = msgrcv(key_id, &client, sizeof(client.text[555]), S_TIME, 0);
+          int r_msgrcv = msgrcv(key_id, &client, sizeof(client.text), S_TIME, 0);
           if(r_msgrcv == -1)
           {
             printf("msgrcv status: %d\n", r_msgrcv);
@@ -139,6 +139,14 @@ int main()
         printf("Message: %s\n", client.text);
         client.status = COND;
       } break;
+      default: 
+      {
+        printf("Unknown command!");
+        client.status = C_DISC;
+        msgsnd(key_id, &client, 0, IPC_NOWAIT);
+        msgrcv(key_id, &client, 0, S_DISC, 0);
+        client.status = EXIT;
+      }
     }
     sleep(1);
     printf("Next iteration\n");
