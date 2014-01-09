@@ -13,7 +13,7 @@ struct client {
 
 enum statuses
 {
-  IDLE, C_CONN, C_DISC, C_TIME, 
+  IDLE, C_CONN, C_DISC, C_TIME,
   S_CONN, S_DISC, S_TIME
 };
 
@@ -24,7 +24,7 @@ int main()
   char key_num = 111;
   key_t key;
   int key_id;
-  int server_time_left = 60;
+  int server_time_left = 666;
   client.status = IDLE;
   //ssize_t b_recieved;
 
@@ -43,12 +43,22 @@ int main()
           client.status = S_CONN;
           msgsnd(key_id, &client, 0, 0);
         }
+        else
+        {   
+          if(msgrcv(key_id, &client, 0, C_DISC, IPC_NOWAIT) > -1)
+          {
+            client.status = S_DISC;
+            msgsnd(key_id, &client, 0, IPC_NOWAIT);
+            client.status = IDLE;
+          }
+        }  
         break;
       case S_CONN:
         if(msgrcv(key_id, &client, 0, C_TIME, IPC_NOWAIT) > -1)
         {
           client.status = S_TIME;
-          strcpy(client.text, "YO BRO!");
+          strcpy(client.text, "THIS TEXT CAME FROM SERVER, RLY\n");
+          //printf("CLIENT TEXT: %s", client.text);
           msgsnd(key_id, &client, sizeof(client.text), 0);
           client.status = S_CONN;
         }
@@ -73,7 +83,7 @@ int main()
     // printf("Server time left: %d\n", server_time_left);
     sleep(1);
   }
-
+   
   // if(b_recieved < 0) printf("No Message :(\n");
   msgctl(key_id, IPC_RMID, NULL);
   return 0;
