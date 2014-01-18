@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         }
         sleep(1);
     }
-	exit(0);
+    exit(0);
     free(memory);
     return 0;    
 }
