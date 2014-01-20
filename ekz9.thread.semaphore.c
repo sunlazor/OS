@@ -19,6 +19,9 @@ void * work(void *arg)
     {
         printf("CHILD THREAD: Trying take main resourse...\n");
         r_semap = sem_trywait(&semap);
+        // В случае использования функции sem_wait(&semap)
+        // произойдет блокировка потока и поток остановится до того, пока
+        // главный поток не разблокирует семафор.
         if (r_semap == 0)
         {
             printf("CHILD THREAD: Success! Main resourse: %d\n", resourse);
